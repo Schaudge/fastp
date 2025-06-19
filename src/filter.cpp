@@ -1,3 +1,4 @@
+#include "sdust.h"
 #include "processor.h"
 #include "peprocessor.h"
 #include "seprocessor.h"
@@ -65,19 +66,28 @@ int Filter::passFilter(Read* r) {
 }
 
 bool Filter::passLowComplexityFilter(Read* r) {
-    int diff = 0;
     int length = r->length();
-    if(length <= 1)
-        return false;
-    const char* data = r->mSeq->c_str();
-    for(int i=0; i<length-1; i++) {
-        if(data[i] != data[i+1])
-            diff++;
-    }
-    if( (double)diff/(double)(length-1) >= mOptions->complexityFilter.threshold )
+    if (length <= 5)
         return true;
-    else
-        return false;
+
+    const auto * data = reinterpret_cast<const uint8_t *>(r->mSeq->c_str());
+    int lowComplexitySize = sdust_lh3(data);
+    if (lowComplexitySize * 2 < length)
+        return true;
+    return false;
+
+//    int diff = 0, pair = 0;
+//    const char* data = r->mSeq->c_str();
+//    for (int i = 0; i < length - 1; ++i) {
+//        if (data[i] != data[i+1])
+//            ++diff;
+//        if (i > 2 && data[i] == data[i-2] && data[i-1] == data[i+1])
+//            ++pair;
+//    }
+//    if ( (pair << 1 < length) && (double) diff/(double)(length-1) >= mOptions->complexityFilter.threshold )
+//        return true;
+//    else
+//        return false;
 }
 
 Read* Filter::trimAndCut(Read* r, int front, int tail, int& frontTrimmed) {
