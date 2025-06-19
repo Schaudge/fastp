@@ -46,7 +46,9 @@ PairEndProcessor::PairEndProcessor(Options* opt){
 }
 
 PairEndProcessor::~PairEndProcessor() {
-    delete mInsertSizeHist;
+    delete[] mInsertSizeHist;
+    delete mFilter;
+    delete mUmiProcessor;
     if(mDuplicate) {
         delete mDuplicate;
         mDuplicate = NULL;
@@ -685,8 +687,8 @@ bool PairEndProcessor::processPairEnd(ReadPack* leftPack, ReadPack* rightPack, T
     if(overlappedOut)
         delete overlappedOut;
 
-    delete leftPack->data;
-    delete rightPack->data;
+    delete[] leftPack->data;
+    delete[] rightPack->data;
     delete leftPack;
     delete rightPack;
 
@@ -781,7 +783,7 @@ void PairEndProcessor::readerTask(bool isLeft)
             ReadPack* pack = new ReadPack;
             pack->data = data;
             pack->count = count;
-            
+
             if(isLeft) {
                 mLeftInputLists[mLeftPackReadCounter % mOptions->thread]->produce(pack);
                 mLeftPackReadCounter++;
@@ -857,8 +859,7 @@ void PairEndProcessor::readerTask(bool isLeft)
     // if the last data initialized is not used, free it
     if(data != NULL)
         delete[] data;
-    if(reader != NULL)
-        delete reader;
+    delete reader;
 }
 
 void PairEndProcessor::interleavedReaderTask()

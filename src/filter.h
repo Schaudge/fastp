@@ -15,7 +15,7 @@ public:
     Filter(Options* opt);
     ~Filter();
     int passFilter(Read* r);
-    bool passLowComplexityFilter(Read* r);
+    static bool passLowComplexityFilter(Read* r);
     Read* trimAndCut(Read* r, int front, int tail, int& frontTrimmed);
     bool filterByIndex(Read* r);
     bool filterByIndex(Read* r1, Read* r2);

@@ -305,10 +305,10 @@ Read* FastqReader::read(){
 		strand = readInPool->mStrand;
 		quality = readInPool->mQuality;
 	} else {
-		name = new string();
-		sequence = new string();
-		strand = new string();
-		quality = new string();
+		name = new string("");
+		sequence = new string("");
+		strand = new string("");
+		quality = new string("");
 	}
 
 	getLine(name);
