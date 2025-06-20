@@ -33,6 +33,7 @@ SingleEndProcessor::SingleEndProcessor(Options* opt){
 
 SingleEndProcessor::~SingleEndProcessor() {
     delete mFilter;
+    delete mUmiProcessor;
     if(mDuplicate) {
         delete mDuplicate;
         mDuplicate = NULL;
@@ -307,7 +308,7 @@ bool SingleEndProcessor::processSingleEnd(ReadPack* pack, ThreadConfig* config){
     if(failedOut)
         delete failedOut;
 
-    delete pack->data;
+    delete[] pack->data;
     delete pack;
 
     mPackProcessedCounter++;

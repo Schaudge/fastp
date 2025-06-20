@@ -32,7 +32,7 @@ bool ReadPool::input(int tid, Read* data) {
 
 void ReadPool::cleanup() {
     for(int t=0; t<mOptions->thread; t++) {
-        while(mBufferLists[t]->canBeConsumed() || mBufferLists[t]->size() > 0) {
+        while (mBufferLists[t]->size() > 0) {
             delete mBufferLists[t]->consume();
             mConsumed++;
         }
