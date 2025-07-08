@@ -4,14 +4,14 @@ https://anaconda.org/bioconda/fastp/badges/version.svg)](https://anaconda.org/bi
 https://anaconda.org/bioconda/fastp/badges/downloads.svg)](https://anaconda.org/bioconda/fastp)
 [![DebianBadge](
 https://badges.debian.net/badges/debian/unstable/fastp/version.svg)](https://packages.debian.org/unstable/fastp)
-[![fastp ci](https://github.com/OpenGene/fastp/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OpenGene/fastp/actions/workflows/ci.yml)
 
 # fastp
 A tool designed to provide ultrafast all-in-one preprocessing and quality control for FastQ data.     
 
-This tool is designed for processing short reads (i.e. Illumina NovaSeq, MGI), if you are looking for tools to process long reads (i.e. Nanopore, PacBio, Cyclone), please use [fastplong](https://github.com/OpenGene/fastplong)  
+This tool is designed for processing short reads (i.e. Illumina NovaSeq, MGI), if you are looking for tools to process long reads (i.e. Nanopore, PacBio, Cyclone), please use [fastplong](https://github.com/OpenGene/fastplong).  
 
-Citation: Shifu Chen. 2023. Ultrafast one-pass FASTQ data preprocessing, quality control, and deduplication using fastp. iMeta 2: e107. https://doi.org/10.1002/imt2.107
+fastp supports batch processing of multiple FASTQ files in a folder, see - [batch processing](#batch-processing)
+
 
 - [features](#features)
 - [simple usage](#simple-usage)
@@ -53,6 +53,7 @@ Citation: Shifu Chen. 2023. Ultrafast one-pass FASTQ data preprocessing, quality
 - [duplication rate and deduplication](#duplication-rate-and-deduplication)
   - [duplication rate evaluation](#duplication-rate-evaluation)
   - [deduplication](#deduplication)
+- [batch processing](#batch-processing)
 - [all options](#all-options)
 - [citations](#citations)
 
@@ -377,6 +378,25 @@ fastp uses a hash algorithm to find the identical sequences. Due to the possible
 ## deduplication
 Since `v0.22.0`, fastp supports deduplication for FASTQ data. Specify `-D` or `--dedup` to enable this option. When `--dedup` is enabled, the `dup_calc_accuracy` level is default to `3`, and it can be changed to any value of 1 ~ 6.
 
+# batch processing
+[parallel.py](https://github.com/OpenGene/fastp/blob/master/parallel.py) is a script to preprocess all FASTQ files within a folder in parallel. It will automatically couple the paired-end FASTQ files.  
+
+This script will generate an `overall.html` to present an aggregate summary for all processed FASTQ files.  
+
+## example
+```shell
+python parallel.py -i /path/to/input/folder -o /path/to/output/folder -r /path/to/reports/folder -a '-f 3 -t 2'
+```
+which means to  
+```
+. process all the FASTQ data in /path/to/input/folder
+. using fastp in PATH
+. with arguments -f 3 and -t 2, which means trimming 3bp in head and 2bp in tail
+. output all clean data to /path/to/output/folder
+. output all HTML and JSON reports to /path/to/reports/folder
+```
+
+See `python parallel.py -h` for details.
 
 # all options
 ```shell
